@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use or adapt this book, please cite it as below."
+title: "Open LLM — From Nothing to the Frontier of Language Models"
+type: book
+authors:
+  - name: "Open LLM Project"
+version: "2.0"
+date-released: "2026-11-02"
+license: CC-BY-4.0
+repository-code: "https://github.com/saatvik333/open-llm"
+keywords:
+  - artificial intelligence
+  - large language models
+  - transformers
+  - machine learning
+abstract: >-
+  An open, zero-prerequisite guide to artificial intelligence and large
+  language models, covering mathematical foundations, transformers,
+  training, post-training, reasoning, agents, retrieval, multimodality,
+  systems, evaluation, safety, governance, and hands-on labs. Second
+  edition, technology snapshot 2 November 2026.

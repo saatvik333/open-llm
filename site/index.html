@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{FULL_TITLE}} is a free and open, zero-prerequisite guide from computation and probability to transformers, training, agents, evaluation, safety, and the modern LLM frontier. Read it online or download the PDF and EPUB.">
+  <meta name="author" content="{{AUTHOR}}">
+  <meta property="og:type" content="book">
+  <meta property="og:title" content="{{FULL_TITLE}}">
+  <meta property="og:description" content="A free and open, zero-prerequisite path from first principles to modern language-model systems. {{EDITION}}, technology snapshot {{SNAPSHOT}}.">
+  <meta property="og:image" content="{{ORIGIN}}/assets/social-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{TITLE}}: {{SUBTITLE}}. Free and open book.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b1930">
+  {{CANONICAL}}
+  <title>{{FULL_TITLE}}</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">{{JSON_LD}}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Open LLM home">OPEN LLM</a>
+    <nav aria-label="Primary navigation">
+      <a href="#inside">Inside</a>
+      <a href="#formats">Formats</a>
+      <a href="#faq">FAQ</a>
+      <a href="{{REPO_URL}}">Source</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">A FREE AND OPEN BOOK</p>
+        <h1>Understand language models from first principles.</h1>
+        <p class="lede">A connected path from bits, vectors, probability, and gradients to transformers, training, agents, evaluation, safety, and the modern AI frontier. Read it online or keep a copy.</p>
+        <ul class="hero-points">
+          <li>Zero prerequisites</li>
+          <li>{{PAGES}} A5 pages and about {{WORDS}} words</li>
+          <li>{{REFERENCES}} primary and official references</li>
+          <li>Hands-on labs</li>
+          <li>Text under CC BY 4.0, code under MIT</li>
+        </ul>
+        <div class="actions">
+          <a class="button primary" href="read/">Read online</a>
+          <a class="button outline" href="{{PDF_URL}}">Download PDF</a>
+          <a class="button outline" href="{{EPUB_URL}}">Download EPUB</a>
+        </div>
+        <p class="microcopy">{{EDITION}}, release {{RELEASE}} (v{{VERSION}}). Technology snapshot: {{SNAPSHOT}}. Downloads come from the latest <a href="{{RELEASES_URL}}">GitHub Release</a>; every file is listed with its SHA-256 checksum in <a href="{{SUMS_URL}}">SHA256SUMS</a>.</p>
+      </div>
+      <figure class="cover-wrap">
+        <img src="assets/cover-web.jpg" width="1200" height="1703" alt="Dark navy cover of {{FULL_TITLE}}">
+      </figure>
+    </section>
+
+    <section class="trust-strip" aria-label="Release assurances">
+      <div><strong>Free and open</strong><span>CC BY 4.0 text, MIT code</span></div>
+      <div><strong>Tagged PDF</strong><span>Embedded Unicode fonts</span></div>
+      <div><strong>Validated EPUB 3</strong><span>Checked with EPUBCheck</span></div>
+      <div><strong>Checksummed</strong><span>SHA-256 for every release file</span></div>
+    </section>
+
+    <section class="section" id="inside">
+      <div class="section-heading">
+        <p class="eyebrow">ONE CONNECTED MAP</p>
+        <h2>From “what is a number?” to deployed AI systems</h2>
+        <p>The book separates definitions, derivations, empirical regularities, engineering judgment, and open questions—so you can update your knowledge without rebuilding it from scratch.</p>
+      </div>
+      <div class="feature-grid">
+        <article><span>01</span><h3>Foundations</h3><p>Computation, linear algebra, probability, information theory, calculus, optimization, and learning from data.</p></article>
+        <article><span>02</span><h3>Language models</h3><p>Tokens, embeddings, neural objectives, logits, softmax, sequence models, and the transformer architecture.</p></article>
+        <article><span>03</span><h3>Training and alignment</h3><p>Data pipelines, low-precision and distributed training, scaling, fine-tuning, preference learning, reinforcement learning with verifiable rewards, and reasoning models.</p></article>
+        <article><span>04</span><h3>Applications and agents</h3><p>Context engineering, retrieval, tools and protocols, coding and computer-use agents, memory, multimodality, and explicit trust boundaries.</p></article>
+        <article><span>05</span><h3>Systems and evidence</h3><p>Serving, quantization, caching, evaluation, reliability, security, safety, interpretability, and governance.</p></article>
+        <article><span>06</span><h3>Hands-on labs</h3><p>Sampling, tokenization, autodiff, attention, a tiny transformer, fine-tuning, RAG, tool loops, evaluations, KV-cache budgets, verifiable-reward RL, and an agent under prompt-injection attack.</p></article>
+      </div>
+    </section>
+
+    <section class="section formats" id="formats">
+      <div>
+        <p class="eyebrow">THREE WAYS TO READ</p>
+        <h2>Pick the format that fits your device</h2>
+      </div>
+      <div class="format-grid">
+        <article><h3>Online edition</h3><p>A searchable single-page edition with a linked table of contents and clickable citations. No account and no scripts.</p><a class="text-link" href="read/">Read online</a></article>
+        <article><h3>A5 PDF</h3><p>Fixed layout, tagged, bookmarked, web-linearized, and set with embedded Unicode fonts.</p><a class="text-link" href="{{PDF_URL}}">Download {{FILE_BASE}}.pdf</a></article>
+        <article><h3>EPUB 3</h3><p>Reflowable text with semantic headings, structural navigation, and transformable display for phones and e-readers.</p><a class="text-link" href="{{EPUB_URL}}">Download {{FILE_BASE}}.epub</a></article>
+      </div>
+    </section>
+
+    <section class="section quote-section">
+      <blockquote>Durable concepts, explained in depth. Named products, clearly dated.</blockquote>
+      <p>{{AUTHOR}} · {{EDITION}} · Technology snapshot {{SNAPSHOT}}</p>
+    </section>
+
+    <section class="section faq" id="faq">
+      <p class="eyebrow">QUESTIONS</p>
+      <h2>Before you start</h2>
+      <details><summary>Who is this book for?</summary><p>Self-directed beginners, software engineers, students, educators, technical leaders, and experienced practitioners rebuilding their foundations.</p></details>
+      <details><summary>Do I need previous mathematics or AI experience?</summary><p>No. Equations are explained in words before symbols, and the book builds its vocabulary progressively.</p></details>
+      <details><summary>Was this book written by AI?</summary><p>Yes. The text was written by AI language models under the direction of the Open LLM Project. Separate AI fact-checking passes then re-opened the cited primary source for each claim, recomputed every number, and ran every code example; the method is described in <a href="{{VERIFICATION_URL}}">VERIFICATION.md</a>. Automated checking reduces errors but cannot guarantee their absence, so every claim carries a citation you can follow, and corrections are welcome on the issue tracker.</p></details>
+      <details><summary>What may I do with it?</summary><p>The text and original diagrams use <a href="{{LICENSE_URL}}">CC BY 4.0</a>: share and adapt them for any purpose, including commercially, with attribution and a note of any changes. Code samples and build scripts use the MIT License. See the <a href="{{LICENSE_FILE_URL}}">license file</a> for the full terms.</p></details>
+      <details><summary>How do I cite it?</summary><p>{{AUTHOR}}. <em>{{FULL_TITLE}}</em>. {{EDITION}}, release {{RELEASE}}, {{YEAR}}. Machine-readable metadata is in <a href="{{CITATION_URL}}">CITATION.cff</a>.</p></details>
+      <details><summary>How current is it?</summary><p>The technology snapshot date is {{SNAPSHOT}}. Concepts are meant to last; named products, laws, and capabilities are dated and may have changed. Newer releases appear on the <a href="{{RELEASES_URL}}">releases page</a>.</p></details>
+      <details><summary>How do I verify a download?</summary><p>Download <a href="{{SUMS_URL}}">SHA256SUMS</a> next to the book file and run <code>sha256sum -c SHA256SUMS --ignore-missing</code>.</p></details>
+      <details><summary>How do I report an error or an accessibility barrier?</summary><p>Open an issue on the <a href="{{ISSUES_URL}}">project issue tracker</a> with the edition, page or section, and what you expected. The <a href="{{ACCESSIBILITY_URL}}">accessibility notes</a> describe what each format provides and how to ask for help.</p></details>
+    </section>
+
+    <section class="final-cta" aria-labelledby="final-title">
+      <p class="eyebrow">FREE AND OPEN</p>
+      <h2 id="final-title">Start reading.</h2>
+      <p>No account, no payment, no tracking. Read it in the browser or take the PDF and EPUB with you.</p>
+      <div class="actions centered">
+        <a class="button primary" href="read/">Read online</a>
+        <a class="button secondary" href="{{PDF_URL}}">Download PDF</a>
+        <a class="button secondary" href="{{EPUB_URL}}">Download EPUB</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© {{YEAR}} {{AUTHOR}}. Text and diagrams CC BY 4.0; code MIT.</p>
+    <nav aria-label="Project">
+      <a href="{{REPO_URL}}">Source</a>
+      <a href="{{RELEASES_URL}}">Releases</a>
+      <a href="{{LICENSE_FILE_URL}}">License</a>
+      <a href="{{CITATION_URL}}">Cite</a>
+      <a href="{{ACCESSIBILITY_URL}}">Accessibility</a>
+    </nav>
+  </footer>
+</body>
+</html>

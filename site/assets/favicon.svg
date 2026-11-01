@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Open LLM">
+  <defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#155eef"/><stop offset="1" stop-color="#13b8a6"/></linearGradient></defs>
+  <rect width="64" height="64" rx="12" fill="#0b1930"/>
+  <path d="M10 46h44v5H10z" fill="url(#g)"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#fff">OL</text>
+</svg>

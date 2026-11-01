@@ -1,0 +1,39 @@
+name: Correction
+description: Report a factual error, a broken citation, or code that does not run.
+title: "Correction: "
+labels: ["correction"]
+body:
+  - type: input
+    id: edition
+    attributes:
+      label: Edition and release
+      description: Shown on the title page, for example "Second edition, release 2.0".
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: Part, section heading, lab, or page number.
+    validations:
+      required: true
+  - type: textarea
+    id: says
+    attributes:
+      label: What the book says
+      description: Quote the sentence, number, or code.
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What is correct
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: A link to the primary source (paper, official documentation, legal text) that supports the correction.
+    validations:
+      required: true
