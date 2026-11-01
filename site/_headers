@@ -1,8 +1,9 @@
 # Security headers for every response. Nothing on this site runs JavaScript or loads a
-# third-party resource. The standalone book edition at /read/ carries one inline stylesheet,
-# which the policy allows by its SHA-256 hash; scripts/build-site.js fills the hash in.
+# third-party resource; fonts are self-hosted under /assets/fonts/ (SIL OFL, see OFL.txt).
+# The standalone book edition at /read/ carries one inline stylesheet, which the policy
+# allows by its SHA-256 hash; scripts/build-site.js fills the hash in.
 /*
-  Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'self' 'sha256-{{READ_STYLE_HASH}}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; img-src 'self'; font-src 'self'; style-src 'self' 'sha256-{{READ_STYLE_HASH}}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()

@@ -49,10 +49,17 @@ function manuscriptStats() {
     .map(name => fs.readFileSync(path.join(MANUSCRIPT, name), 'utf8'))
     .join('\n');
   const references = (source.match(/^\*\*\[R\d{2,3}\]\*\*/gm) || []).length;
-  const words = (source.match(/[\p{L}\p{N}_’'-]+/gu) || []).length;
+  const labs = (source.match(/^# Lab \d+ —/gm) || []).length;
+  const words = (source.match(/\b[\w’'-]+\b/gu) || []).length; // same rule as scripts/preflight.py
   const pages = Number(execFileSync('qpdf', ['--show-npages', path.join(DIST, 'open-llm.pdf')], { encoding: 'utf8' }).trim());
-  if (!references || !words || !Number.isInteger(pages) || pages < 1) throw new Error('Unable to compute book statistics.');
-  return { references, pages, words: Math.round(words / 1000) * 1000 };
+  if (!references || !labs || !words || !Number.isInteger(pages) || pages < 1) throw new Error('Unable to compute book statistics.');
+  return { references, labs, pages, words: Math.round(words / 1000) * 1000 };
+}
+
+// Decimal units, as file managers and browsers display them.
+function fileSize(file) {
+  const bytes = fs.statSync(file).size;
+  return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} KB`;
 }
 
 function render(template, values, label) {
@@ -65,6 +72,7 @@ function render(template, values, label) {
 function main() {
   requireFile(path.join(DIST, 'open-llm.html'), 'run node scripts/build.js first');
   requireFile(path.join(DIST, 'open-llm.pdf'), 'run node scripts/build.js first');
+  requireFile(path.join(DIST, 'open-llm.epub'), 'run node scripts/build-epub.js first');
   requireFile(path.join(DIST, 'open-llm-cover.jpg'), 'run node scripts/build-cover.js first');
   requireFile(path.join(DIST, 'open-llm-social-card.jpg'), 'run node scripts/build-cover.js first');
 
@@ -96,6 +104,10 @@ function main() {
     description: BOOK.description,
   }).replace(/</g, '\\u003c');
   const values = {
+    LABS: String(stats.labs),
+    WORDS_SHORT: `${Math.round(stats.words / 1000)}k`,
+    PDF_SIZE: fileSize(path.join(DIST, 'open-llm.pdf')),
+    EPUB_SIZE: fileSize(path.join(DIST, 'open-llm.epub')),
     FULL_TITLE: escapeHtml(BOOK.fullTitle),
     TITLE: escapeHtml(BOOK.title),
     SUBTITLE: escapeHtml(BOOK.subtitle),

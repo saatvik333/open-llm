@@ -242,8 +242,11 @@ def check_site() -> None:
         if remote:
             fail(f"{relative} loads a remote resource: {remote}")
     css = (SITE / "styles.css").read_text(encoding="utf-8")
-    if re.search(r"url\(|@import", css):
-        fail("styles.css must not load external resources")
+    if "@import" in css:
+        fail("styles.css must not import other stylesheets")
+    for target in re.findall(r"url\(\s*[\"']?([^\"')]+)", css):
+        if not re.fullmatch(r"assets/fonts/[\w.-]+\.woff2", target) or not (SITE / target).is_file():
+            fail(f"styles.css may load only bundled fonts from assets/fonts/: {target}")
 
     check_headers((SITE / "_headers").read_text(encoding="utf-8"), book_html.decode("utf-8"))
     expected_images = {
