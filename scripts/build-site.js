@@ -62,6 +62,10 @@ function fileSize(file) {
   return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} KB`;
 }
 
+function shortHash(file) {
+  return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 10);
+}
+
 function render(template, values, label) {
   return template.replace(/\{\{([A-Z_]+)\}\}/g, (match, key) => {
     if (!(key in values)) throw new Error(`${label}: unknown placeholder ${match}`);
@@ -109,6 +113,15 @@ function main() {
     license: BOOK.licenseUrl,
     description: BOOK.description,
   }).replace(/</g, '\\u003c');
+  // Web cover and social card (before the landing page, which links them by content hash).
+  fs.mkdirSync(path.join(OUTPUT, 'assets'), { recursive: true });
+  execFileSync('magick', [
+    path.join(DIST, 'open-llm-cover.jpg'),
+    '-resize', '1200x1703!', '-strip', '-colorspace', 'sRGB', '-quality', '91',
+    path.join(OUTPUT, 'assets', 'cover-web.jpg'),
+  ]);
+  fs.copyFileSync(path.join(DIST, 'open-llm-social-card.jpg'), path.join(OUTPUT, 'assets', 'social-card.jpg'));
+
   const values = {
     LABS: String(stats.labs),
     WORDS_SHORT: `${Math.round(stats.words / 1000)}k`,
@@ -145,18 +158,13 @@ function main() {
       ? `<link rel="canonical" href="${escapeHtml(origin)}/">\n  <meta property="og:url" content="${escapeHtml(origin)}/">`
       : '',
     JSON_LD: jsonLd,
+    // Content hashes in the image URLs: a new cover gets a new URL, so no browser or CDN
+    // keeps showing the old one under the one-hour asset cache.
+    COVER_URL: `assets/cover-web.jpg?v=${shortHash(path.join(OUTPUT, 'assets', 'cover-web.jpg'))}`,
+    SOCIAL_URL: `${escapeHtml(origin)}/assets/social-card.jpg?v=${shortHash(path.join(OUTPUT, 'assets', 'social-card.jpg'))}`,
   };
   const index = render(fs.readFileSync(path.join(SOURCE, 'index.html'), 'utf8'), values, 'site/index.html');
   fs.writeFileSync(path.join(OUTPUT, 'index.html'), index);
-
-  // Web cover and social card.
-  fs.mkdirSync(path.join(OUTPUT, 'assets'), { recursive: true });
-  execFileSync('magick', [
-    path.join(DIST, 'open-llm-cover.jpg'),
-    '-resize', '1200x1703!', '-strip', '-colorspace', 'sRGB', '-quality', '91',
-    path.join(OUTPUT, 'assets', 'cover-web.jpg'),
-  ]);
-  fs.copyFileSync(path.join(DIST, 'open-llm-social-card.jpg'), path.join(OUTPUT, 'assets', 'social-card.jpg'));
 
   // Standalone HTML edition.
   const book = fs.readFileSync(path.join(DIST, 'open-llm.html'), 'utf8');
