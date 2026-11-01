@@ -1,11 +1,19 @@
-# Open LLM — Second Edition, Release 2.0 (v2.0.0)
+# Open LLM — Second Edition, Release 2.1 (v2.1.0)
 
 Release date and technology snapshot: **2 November 2026**. Free and open: text under CC BY 4.0, code under MIT.
 
+## What changed in release 2.1
+
+Design only; the text is unchanged from release 2.0.
+
+- New typography shared by the book, EPUB, online edition, and website: Instrument Serif for chapter and section headings, Inter Tight for text, JetBrains Mono for labels and code (all SIL Open Font License, embedded).
+- A new full-bleed cover and social card, quieter tables and callouts, and an accent-blue chapter rule.
+- The page count grew from 390 to 421 with the new type sizes.
+
 ## Files
 
-- `Open-LLM-v2.0.0.pdf` — A5, 390 pages, tagged, bookmarked, web-linearized, all fonts embedded
-- `Open-LLM-v2.0.0.epub` — reflowable EPUB 3, validated with EPUBCheck 5.2.1 (0 errors, 0 warnings)
+- `Open-LLM-v2.1.0.pdf` — A5, 421 pages, tagged, bookmarked, web-linearized, all fonts embedded
+- `Open-LLM-v2.1.0.epub` — reflowable EPUB 3 with embedded fonts, validated with EPUBCheck 5.2.1 (0 errors, 0 warnings)
 - `SHA256SUMS` — verify with `sha256sum -c SHA256SUMS --ignore-missing`
 - Web edition: the project site, at `/read/`
 

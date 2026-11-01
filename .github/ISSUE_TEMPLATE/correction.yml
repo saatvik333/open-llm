@@ -7,7 +7,7 @@ body:
     id: edition
     attributes:
       label: Edition and release
-      description: Shown on the title page, for example "Second edition, release 2.0".
+      description: Shown on the title page, for example "Second edition, release 2.1".
     validations:
       required: true
   - type: input

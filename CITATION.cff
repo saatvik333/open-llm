@@ -4,7 +4,7 @@ title: "Open LLM — From Nothing to the Frontier of Language Models"
 type: book
 authors:
   - name: "Open LLM Project"
-version: "2.0"
+version: "2.1"
 date-released: "2026-11-02"
 license: CC-BY-4.0
 repository-code: "https://github.com/saatvik333/open-llm"

@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="{{FULL_TITLE}}: a free, open book from bits and probability to transformers, reasoning models, and agents, with {{LABS}} runnable labs and {{REFERENCES}} cited sources. Read online or download the PDF and EPUB.">
   <meta name="author" content="{{AUTHOR}}">
-  <meta name="theme-color" content="#0b1930">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f2efe8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e12" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="book">
   <meta property="og:title" content="{{FULL_TITLE}}">
   <meta property="og:description" content="A free, open book from first principles to the language-model frontier. {{EDITION}}, snapshot {{SNAPSHOT}}.">
@@ -17,69 +19,142 @@
   {{CANONICAL}}
   <title>{{FULL_TITLE}}</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/noto-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
   <script type="application/ld+json">{{JSON_LD}}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="hero">
-    <nav class="bar" aria-label="Primary">
-      <a class="brand" href="./">OPEN LLM</a>
-      <span>
-        <a href="read/">Read</a>
-        <a href="{{REPO_URL}}">Source</a>
-      </span>
+  <header class="masthead">
+    <a class="wordmark" href="#top" aria-label="Open LLM, top of page">Open<span>LLM</span></a>
+    <p class="masthead-meta mono">{{EDITION}} · {{SNAPSHOT}}</p>
+    <nav aria-label="Primary">
+      <a href="read/">Read</a>
+      <a href="#contents">Contents</a>
+      <a href="#labs">Labs</a>
+      <a href="{{REPO_URL}}">Source</a>
     </nav>
-    <div class="hero-inner">
-      <div class="hero-text">
-        <p class="kicker">A free and open book</p>
-        <h1>Open LLM</h1>
-        <p class="subtitle">From Nothing to the Frontier of Language Models</p>
-        <div class="rule" aria-hidden="true"></div>
-        <p class="deck">From bits, vectors, and probability to transformers, reasoning models, agents, and the field as it stood on {{SNAPSHOT}}. {{PAGES}} pages, {{LABS}} runnable labs, {{REFERENCES}} cited sources.</p>
-        <div class="actions">
-          <a class="button" href="read/">Read online</a>
-          <a class="button ghost" href="{{PDF_URL}}">PDF <small>{{PDF_SIZE}}</small></a>
-          <a class="button ghost" href="{{EPUB_URL}}">EPUB <small>{{EPUB_SIZE}}</small></a>
-        </div>
-        <p class="meta">{{EDITION}} · v{{VERSION}} · Text CC BY 4.0, code MIT</p>
-      </div>
-      <img class="cover" src="assets/cover-web.jpg" width="1200" height="1703" alt="Cover of {{FULL_TITLE}}">
-    </div>
   </header>
 
   <main id="main">
-    <section aria-labelledby="contents-title">
-      <h2 id="contents-title">Contents</h2>
-      <ol class="toc">
-        <li><a href="read/#part-i-foundations"><b>I</b>Foundations</a></li>
-        <li><a href="read/#part-ii-neural-networks-learn-language"><b>II</b>Neural Networks Learn Language</a></li>
-        <li><a href="read/#part-iii-the-transformer-piece-by-piece"><b>III</b>The Transformer, Piece by Piece</a></li>
-        <li><a href="read/#part-iv-creating-and-shaping-a-language-model"><b>IV</b>Creating and Shaping a Language Model</a></li>
-        <li><a href="read/#part-v-building-systems-around-models"><b>V</b>Building Systems Around Models</a></li>
-        <li><a href="read/#part-vi-serving-measuring-and-governing-ai"><b>VI</b>Serving, Measuring, and Governing AI</a></li>
-        <li><a href="read/#part-vii-build-it-to-understand-it"><b>VII</b>Build It to Understand It: {{LABS}} labs</a></li>
-        <li><a href="read/#part-viii-the-frontier-and-beyond"><b>VIII</b>The Frontier and Beyond</a></li>
-        <li><a href="read/#appendix-a-formula-and-shape-sheet"><b>A–E</b>Appendices and references</a></li>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <p class="kicker mono reveal">A free and open book <span aria-hidden="true">—</span> CC BY 4.0</p>
+      <h1 id="hero-title" class="display reveal">From nothing<br> to the <em>frontier</em><br> of language models.</h1>
+      <div class="hero-foot">
+        <p class="lede reveal">Bits, vectors, probability, and gradients first. Then the transformer, piece by piece, and everything built on it: training at scale, reinforcement learning for reasoning, retrieval, agents, serving, evaluation, safety, and the field as it stood on {{SNAPSHOT}}.</p>
+        <div class="cta reveal">
+          <a class="button" href="read/">Read online <span aria-hidden="true">→</span></a>
+          <a class="link" href="{{PDF_URL}}">PDF <span class="mono">{{PDF_SIZE}}</span></a>
+          <a class="link" href="{{EPUB_URL}}">EPUB <span class="mono">{{EPUB_SIZE}}</span></a>
+        </div>
+      </div>
+      <figure class="cover reveal">
+        <img src="assets/cover-web.jpg" width="1200" height="1703" alt="Cover of {{FULL_TITLE}}, {{EDITION}}" fetchpriority="high">
+      </figure>
+    </section>
+
+    <section class="figures" aria-label="The book in numbers">
+      <dl>
+        <div><dt class="mono">Pages</dt><dd>{{PAGES}}</dd></div>
+        <div><dt class="mono">Words</dt><dd>{{WORDS_SHORT}}</dd></div>
+        <div><dt class="mono">Cited sources</dt><dd>{{REFERENCES}}</dd></div>
+        <div><dt class="mono">Runnable labs</dt><dd>{{LABS}}</dd></div>
+      </dl>
+    </section>
+
+    <section class="contents" id="contents" aria-labelledby="contents-title">
+      <div class="section-head">
+        <p class="mono label">01 / Contents</p>
+        <h2 id="contents-title">Eight parts, one connected map.</h2>
+      </div>
+      <ol class="index">
+        <li><a href="read/#part-i-foundations"><span class="num">I</span><span class="title">Foundations</span><span class="desc">Computation and number formats, linear algebra, probability, information theory, calculus, optimization.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-ii-neural-networks-learn-language"><span class="num">II</span><span class="title">Neural networks learn language</span><span class="desc">Neurons and training stability, embeddings, tokenization, logits and the next-token objective.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-iii-the-transformer-piece-by-piece"><span class="num">III</span><span class="title">The transformer, piece by piece</span><span class="desc">Attention, latent and sparse attention, long context, mixture of experts, hybrids, diffusion models.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-iv-creating-and-shaping-a-language-model"><span class="num">IV</span><span class="title">Creating and shaping a model</span><span class="desc">Data, scaling, distributed and low-precision training, preference learning, RL with verifiable rewards, reasoning.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-v-building-systems-around-models"><span class="num">V</span><span class="title">Building systems around models</span><span class="desc">Context engineering, retrieval, tools and MCP, coding and computer-use agents, memory, multimodality.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-vi-serving-measuring-and-governing-ai"><span class="num">VI</span><span class="title">Serving, measuring, governing</span><span class="desc">Inference systems, evaluation, security, safety and alignment, interpretability, law.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-vii-build-it-to-understand-it"><span class="num">VII</span><span class="title">Build it to understand it</span><span class="desc">Twelve labs and a capstone, from a hand-made sampler to an agent under attack.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#part-viii-the-frontier-and-beyond"><span class="num">VIII</span><span class="title">The frontier and beyond</span><span class="desc">A dated landscape of hosted and open models, research directions, forecasts.</span><span class="go" aria-hidden="true">↗</span></a></li>
+        <li><a href="read/#appendix-a-formula-and-shape-sheet"><span class="num">A–E</span><span class="title">Appendices</span><span class="desc">Formula sheet, glossary, myths, checklists, a one-year curriculum, and the full bibliography.</span><span class="go" aria-hidden="true">↗</span></a></li>
       </ol>
     </section>
 
-    <section aria-labelledby="made-title">
-      <h2 id="made-title">How it was made</h2>
-      <p>The text was written by AI language models under the direction of the {{AUTHOR}}. Separate AI fact-checking passes then reopened the cited primary source behind each claim, recomputed every number, and ran every code example. That reduces errors but cannot rule them out, and no human expert has reviewed the full text. <a href="{{VERIFICATION_URL}}">Read the method</a> or <a href="{{ISSUES_URL}}">report an error</a>.</p>
+    <section class="labs" id="labs" aria-labelledby="labs-title">
+      <div class="section-head">
+        <p class="mono label">02 / Labs</p>
+        <h2 id="labs-title">Build it to <em>understand</em> it.</h2>
+        <p>Small programs you can run and break. The later labs use only the Python standard library and print the exact output shown in the book.</p>
+      </div>
+      <ol class="lab-list mono">
+        <li><a href="read/#lab-0-establish-an-experimental-habit"><span>00</span>Establish an experimental habit</a></li>
+        <li><a href="read/#lab-1-train-a-tiny-tokenizer"><span>01</span>Train a tiny tokenizer</a></li>
+        <li><a href="read/#lab-2-build-scalar-automatic-differentiation"><span>02</span>Build scalar autodiff</a></li>
+        <li><a href="read/#lab-3-implement-one-attention-head"><span>03</span>Implement one attention head</a></li>
+        <li><a href="read/#lab-4-train-a-tiny-transformer"><span>04</span>Train a tiny transformer</a></li>
+        <li><a href="read/#lab-5-fine-tune-responsibly"><span>05</span>Fine-tune responsibly</a></li>
+        <li><a href="read/#lab-6-build-and-evaluate-rag"><span>06</span>Build and evaluate RAG</a></li>
+        <li><a href="read/#lab-7-build-a-safe-tool-loop"><span>07</span>Build a safe tool loop</a></li>
+        <li><a href="read/#lab-8-create-an-evaluation-harness"><span>08</span>Create an evaluation harness</a></li>
+        <li><a href="read/#lab-9-budget-the-key-value-cache"><span>09</span>Budget the key–value cache</a></li>
+        <li><a href="read/#lab-10-reinforce-a-verifiable-answer"><span>10</span>Reinforce a verifiable answer</a></li>
+        <li><a href="read/#lab-11-run-an-agent-loop-under-attack"><span>11</span>Run an agent loop under attack</a></li>
+      </ol>
+    </section>
+
+    <section class="made" id="made" aria-labelledby="made-title">
+      <p class="mono label">03 / How it was made</p>
+      <h2 id="made-title" class="statement">Written by AI.<br> Checked against <em>{{REFERENCES}} sources.</em></h2>
+      <div class="made-body">
+        <p>AI language models wrote the text under the direction of the {{AUTHOR}}. Separate AI fact-checking passes then reopened the cited primary source behind each claim, recomputed every number, and ran every code example.</p>
+        <p>Automated checking reduces errors; it does not prove their absence. No human expert has reviewed the full text. Every claim carries a citation you can follow, and corrections are welcome.</p>
+        <p class="links"><a class="link" href="{{VERIFICATION_URL}}">Read the method</a><a class="link" href="{{ISSUES_URL}}">Report an error</a></p>
+      </div>
+    </section>
+
+    <section class="formats" id="formats" aria-labelledby="formats-title">
+      <div class="section-head">
+        <p class="mono label">04 / Formats</p>
+        <h2 id="formats-title">Read it anywhere.</h2>
+      </div>
+      <div class="format-grid">
+        <a class="format" href="read/"><span class="mono">HTML</span><strong>Online edition</strong><span>One searchable page with linked contents and clickable citations.</span></a>
+        <a class="format" href="{{PDF_URL}}"><span class="mono">PDF · {{PDF_SIZE}}</span><strong>A5 print layout</strong><span>{{PAGES}} pages, tagged and bookmarked, fonts embedded.</span></a>
+        <a class="format" href="{{EPUB_URL}}"><span class="mono">EPUB · {{EPUB_SIZE}}</span><strong>E-readers and phones</strong><span>Reflowable EPUB 3, validated with EPUBCheck.</span></a>
+      </div>
+      <p class="fineprint mono">v{{VERSION}} · Files come from the <a href="{{RELEASES_URL}}">latest GitHub release</a> · Verify with <a href="{{SUMS_URL}}">SHA256SUMS</a></p>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="section-head">
+        <p class="mono label">05 / Questions</p>
+        <h2 id="faq-title">Before you start.</h2>
+      </div>
+      <div class="faq-list">
+        <details><summary>Who is it for?</summary><p>Beginners who want the whole picture, engineers moving into AI, students, and practitioners who want their foundations and the 2024–2026 developments in one place.</p></details>
+        <details><summary>Do I need mathematics or AI experience?</summary><p>No. Every equation is explained in words before symbols, and each part builds on the one before it.</p></details>
+        <details><summary>How current is it?</summary><p>The technology snapshot is {{SNAPSHOT}}. Concepts are meant to last; product names, laws, and capabilities are dated and will change. New releases appear on the <a href="{{RELEASES_URL}}">releases page</a>.</p></details>
+        <details><summary>What may I do with it?</summary><p>The text uses <a href="{{LICENSE_URL}}">CC BY 4.0</a>: share and adapt it for any purpose, including commercially, with attribution. Code uses the MIT License. Full terms are in the <a href="{{LICENSE_FILE_URL}}">license file</a>.</p></details>
+        <details><summary>How do I cite it?</summary><p>{{AUTHOR}}. <em>{{FULL_TITLE}}</em>. {{EDITION}}, release {{RELEASE}}, {{YEAR}}. Machine-readable metadata: <a href="{{CITATION_URL}}">CITATION.cff</a>.</p></details>
+        <details><summary>How do I verify a download?</summary><p>Download <a href="{{SUMS_URL}}">SHA256SUMS</a> next to the file and run <code>sha256sum -c SHA256SUMS --ignore-missing</code>.</p></details>
+        <details><summary>Something is inaccessible or wrong.</summary><p>Open an issue on the <a href="{{ISSUES_URL}}">tracker</a> with the section and what you expected. The <a href="{{ACCESSIBILITY_URL}}">accessibility notes</a> describe what each format provides.</p></details>
+      </div>
     </section>
   </main>
 
-  <footer>
-    <span>{{AUTHOR}} · {{YEAR}}</span>
-    <span>
-      <a href="{{RELEASES_URL}}">Releases</a>
-      <a href="{{CITATION_URL}}">Cite</a>
-      <a href="{{LICENSE_FILE_URL}}">License</a>
-      <a href="{{ACCESSIBILITY_URL}}">Accessibility</a>
-    </span>
+  <footer class="colophon">
+    <p class="giant" aria-hidden="true">Open<span>LLM</span></p>
+    <div class="colophon-row">
+      <p>© {{YEAR}} {{AUTHOR}}. Text CC BY 4.0, code MIT. No tracking, no scripts.</p>
+      <nav aria-label="Project">
+        <a href="{{REPO_URL}}">Source</a>
+        <a href="{{RELEASES_URL}}">Releases</a>
+        <a href="{{CITATION_URL}}">Cite</a>
+        <a href="{{ACCESSIBILITY_URL}}">Accessibility</a>
+      </nav>
+    </div>
   </footer>
 </body>
 </html>

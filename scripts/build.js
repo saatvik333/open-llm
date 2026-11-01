@@ -9,6 +9,18 @@ const ROOT = path.resolve(__dirname, '..');
 const MANUSCRIPT = path.join(ROOT, 'manuscript');
 const DIST = path.join(ROOT, 'dist');
 const STYLE = path.join(ROOT, 'assets', 'book.css');
+const FONTS = path.join(ROOT, 'assets', 'fonts');
+
+// The book, EPUB, covers, and site share one set of self-hosted typefaces (assets/fonts/fonts.css).
+// `urlFor(file)` maps each font file name to the URL the output can load it from.
+function fontFaces(urlFor) {
+  return fs.readFileSync(path.join(FONTS, 'fonts.css'), 'utf8')
+    .replace(/url\('([\w.-]+\.woff2)'\)/g, (_, file) => `url('${urlFor(file)}')`);
+}
+
+function fontFiles() {
+  return fs.readdirSync(FONTS).filter(name => name.endsWith('.woff2')).sort();
+}
 
 // Single source of truth for edition, version, and release-date metadata.
 // Python tooling, the site builder, and the release preflight read the same file.
@@ -331,13 +343,11 @@ function makeHtml(css, sections, headings, pageNumbers) {
 <body>
 <a class="skip-link" href="#main-content">Skip to the book</a>
 <section class="cover" role="doc-cover" aria-label="Book cover">
-  <div class="cover-kicker">AN OPEN, ZERO-PREREQUISITE FIELD GUIDE</div>
-  <h1>${escapeHtml(BOOK.title.toUpperCase())}</h1>
-  <div class="cover-subtitle">${escapeHtml(BOOK.subtitle)}</div>
-  <div class="cover-rule" aria-hidden="true"></div>
-  <p class="cover-deck">Math • neural networks • transformers • training • reasoning • agents • retrieval • multimodality • systems • evaluation • safety • hands-on labs</p>
-  <div class="cover-author">${escapeHtml(BOOK.author)}</div>
-  <div class="cover-meta">${escapeHtml(BOOK.edition)} · Release ${escapeHtml(BOOK.release)}<br>Technology snapshot: ${escapeHtml(BOOK.snapshot)}</div>
+  <div class="cover-top"><span>A free and open book</span><span>${escapeHtml(BOOK.edition)} · ${escapeHtml(BOOK.year)}</span></div>
+  <p class="cover-display">From nothing to the <em>frontier</em> of language models.</p>
+  <p class="cover-deck">Mathematics · neural networks · transformers · training · reinforcement learning · reasoning · retrieval · agents · serving · evaluation · safety · hands-on labs</p>
+  <h1 class="cover-mark">Open <span>LLM</span></h1>
+  <div class="cover-meta"><span>${escapeHtml(BOOK.author)}</span><span>Technology snapshot ${escapeHtml(BOOK.snapshot)}</span></div>
 </section>
 <section class="imprint" role="doc-imprint" aria-label="Publication information">
   <h1>${escapeHtml(BOOK.title)}</h1>
@@ -365,6 +375,9 @@ function makeHtml(css, sections, headings, pageNumbers) {
 async function renderPdf(page, htmlPath, pdfPath) {
   await page.goto(`file://${htmlPath}`, { waitUntil: 'load' });
   await page.emulateMedia({ media: 'print' });
+  await page.evaluate(() => document.fonts.ready);
+  const missing = await page.evaluate(() => [...document.fonts].filter(face => face.status === 'error').map(face => face.family));
+  if (missing.length) throw new Error(`Fonts failed to load: ${[...new Set(missing)].join(', ')}`);
   await page.pdf({
     path: pdfPath,
     format: 'A5',
@@ -372,7 +385,7 @@ async function renderPdf(page, htmlPath, pdfPath) {
     preferCSSPageSize: true,
     displayHeaderFooter: true,
     headerTemplate: '<div></div>',
-    footerTemplate: '<div style="font-size:8px;color:#6b7280;width:100%;padding:0 18mm;text-align:center;font-family:Arial,sans-serif"><span class="pageNumber"></span></div>',
+    footerTemplate: '<div style="font-size:7px;letter-spacing:.06em;color:#5a5e66;width:100%;padding:0 18mm;text-align:center;font-family:\'DejaVu Sans Mono\',monospace"><span class="pageNumber"></span></div>',
     margin: { top: '12mm', right: '0', bottom: '12mm', left: '0' },
     outline: true,
     tagged: true,
@@ -493,7 +506,8 @@ async function main() {
     const source = fs.readFileSync(path.join(MANUSCRIPT, name), 'utf8');
     return markdownToHtml(source, headings, usedSlugs);
   }).join('\n');
-  const css = fs.readFileSync(STYLE, 'utf8');
+  // dist/open-llm.html and the site's /read/ both sit one level below the folder that holds assets/fonts.
+  const css = fontFaces(file => `../assets/fonts/${file}`) + fs.readFileSync(STYLE, 'utf8');
 
   fs.mkdirSync(DIST, { recursive: true });
   const htmlPath = path.join(DIST, 'open-llm.html');
@@ -539,6 +553,9 @@ if (require.main === module) {
 
 module.exports = {
   BOOK,
+  FONTS,
+  fontFaces,
+  fontFiles,
   escapeHtml,
   inline,
   markdownToHtml,

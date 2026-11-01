@@ -6,8 +6,8 @@ Open LLM is free and open. The book files are published as GitHub Release assets
 
 | Artifact | Where it is built | Where it is published |
 |---|---|---|
-| `Open-LLM-v2.0.0.pdf` — A5, tagged, bookmarked, linearized, embedded fonts | `dist/release/` | GitHub Release asset |
-| `Open-LLM-v2.0.0.epub` — reflowable EPUB 3, validated with EPUBCheck | `dist/release/` | GitHub Release asset |
+| `Open-LLM-v2.1.0.pdf` — A5, tagged, bookmarked, linearized, embedded fonts | `dist/release/` | GitHub Release asset |
+| `Open-LLM-v2.1.0.epub` — reflowable EPUB 3, validated with EPUBCheck | `dist/release/` | GitHub Release asset |
 | `SHA256SUMS` — checksums of the two files above | `dist/release/` | GitHub Release asset |
 | Standalone searchable HTML edition (`dist/open-llm.html`) | `dist/site/read/index.html` | Cloudflare, at `/read/` |
 | Landing page, cover, social card, favicon, headers | `dist/site/` | Cloudflare |
@@ -20,14 +20,14 @@ The canonical fixed-layout publication is the PDF. The site never hosts the PDF 
 
 - **Title:** Open LLM — From Nothing to the Frontier of Language Models
 - **Author and publisher:** Open LLM Project
-- **Edition:** Second edition, release 2.0 (v2.0.0)
+- **Edition:** Second edition, release 2.1 (v2.1.0)
 - **Technology snapshot and release date:** 2 November 2026
 - **Book license:** Creative Commons Attribution 4.0 International
 - **Code license:** MIT
 
 Suggested citation:
 
-> Open LLM Project. *Open LLM — From Nothing to the Frontier of Language Models*. Second edition, release 2.0, 2026.
+> Open LLM Project. *Open LLM — From Nothing to the Frontier of Language Models*. Second edition, release 2.1, 2026.
 
 `CITATION.cff`, this file, and `README.md` repeat the edition, version, and snapshot. `scripts/preflight_release.py` fails if any of them disagrees with `book.json`.
 
@@ -69,18 +69,18 @@ gh repo create saatvik333/open-llm --public --source=. --push
 Publish the release. The `latest/download` links on the site resolve only for a published release that is not a draft or a pre-release, so publish before you deploy:
 
 ```bash
-git tag -a v2.0.0 -m "Open LLM, second edition, release 2.0"
-git push origin v2.0.0
-gh release create v2.0.0 \
-  dist/release/Open-LLM-v2.0.0.pdf \
-  dist/release/Open-LLM-v2.0.0.epub \
+git tag -a v2.1.0 -m "Open LLM, second edition, release 2.1"
+git push origin v2.1.0
+gh release create v2.1.0 \
+  dist/release/Open-LLM-v2.1.0.pdf \
+  dist/release/Open-LLM-v2.1.0.epub \
   dist/release/SHA256SUMS \
-  --title "Open LLM — Second edition, release 2.0 (v2.0.0)" \
+  --title "Open LLM — Second edition, release 2.1 (v2.1.0)" \
   --notes-file RELEASE_NOTES.md \
   --verify-tag
 ```
 
-Check the result with `gh release view v2.0.0` and by downloading the PDF through its `latest/download` URL.
+Check the result with `gh release view v2.1.0` and by downloading the PDF through its `latest/download` URL.
 
 ## 3. Deploy the site to Cloudflare
 
@@ -96,7 +96,7 @@ Validate without uploading, then deploy:
 
 ```bash
 npx cf deploy --dry-run
-npx cf deploy --message "Open LLM v2.0.0"
+npx cf deploy --message "Open LLM v2.1.0"
 ```
 
 `cf` prints the `workers.dev` address when the deploy finishes. Node prints a `MODULE_TYPELESS_PACKAGE_JSON` warning while loading `cloudflare.config.ts`; it is harmless. `package.json` stays a CommonJS package because the build scripts are CommonJS.

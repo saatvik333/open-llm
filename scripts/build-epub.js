@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { execFileSync } = require('child_process');
-const { BOOK, escapeHtml, markdownToHtml } = require('./build.js');
+const { BOOK, escapeHtml, markdownToHtml, fontFaces, fontFiles, FONTS } = require('./build.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const MANUSCRIPT = path.join(ROOT, 'manuscript');
@@ -115,7 +115,12 @@ function main() {
   <rootfiles><rootfile full-path="EPUB/package.opf" media-type="application/oebps-package+xml" /></rootfiles>
 </container>
 `);
-  write('EPUB/css/epub.css', fs.readFileSync(STYLE, 'utf8'));
+  // Embedded OFL fonts; epub.css lives in EPUB/css/, the fonts in EPUB/fonts/.
+  write('EPUB/css/epub.css', fontFaces(file => `../fonts/${file}`) + fs.readFileSync(STYLE, 'utf8'));
+  for (const file of fontFiles()) {
+    fs.mkdirSync(path.join(STAGING, 'EPUB', 'fonts'), { recursive: true });
+    fs.copyFileSync(path.join(FONTS, file), path.join(STAGING, 'EPUB', 'fonts', file));
+  }
   buildCover();
 
   const headings = [];
@@ -180,6 +185,7 @@ function main() {
 `);
 
   const chapterManifest = sections.map((section, index) => `<item id="chapter-${index + 1}" href="text/${section.file}" media-type="application/xhtml+xml" />`).join('\n    ');
+  const fontManifest = fontFiles().map((file, index) => `<item id="font-${index + 1}" href="fonts/${file}" media-type="font/woff2" />`).join('\n    ');
   const chapterSpine = sections.map((_, index) => `<itemref idref="chapter-${index + 1}" />`).join('\n    ');
   write('EPUB/package.opf', `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="book-id" xml:lang="${BOOK.language}" prefix="rendition: http://www.idpf.org/vocab/rendition/#">
@@ -212,6 +218,7 @@ function main() {
     <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
     <item id="css" href="css/epub.css" media-type="text/css" />
+    ${fontManifest}
     <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" properties="cover-image" />
     <item id="cover" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="title-page" href="text/title.xhtml" media-type="application/xhtml+xml" />

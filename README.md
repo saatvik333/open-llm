@@ -6,12 +6,12 @@ The book is intentionally a **connected map and working mental model**, not a cl
 
 **How it was made:** the text was written by AI language models under the direction of the Open LLM Project, then checked by separate AI fact-checking passes against its 422 cited primary sources, with every number recomputed and every code example run. [`VERIFICATION.md`](VERIFICATION.md) describes the method and its limits. Corrections are welcome.
 
-**Second edition, release 2.0 (v2.0.0). Technology snapshot and release date: 2 November 2026.**
+**Second edition, release 2.1 (v2.1.0). Technology snapshot and release date: 2 November 2026.**
 
 ## Read the book
 
 - **Read online:** the project site serves the standalone, searchable edition at `/read/`.
-- **Download:** every [release](https://github.com/saatvik333/open-llm/releases/latest) carries the A5 PDF (`Open-LLM-v2.0.0.pdf`), the reflowable EPUB 3 (`Open-LLM-v2.0.0.epub`), and `SHA256SUMS`. Verify a download with `sha256sum -c SHA256SUMS --ignore-missing`.
+- **Download:** every [release](https://github.com/saatvik333/open-llm/releases/latest) carries the A5 PDF (`Open-LLM-v2.1.0.pdf`), the reflowable EPUB 3 (`Open-LLM-v2.1.0.epub`), and `SHA256SUMS`. Verify a download with `sha256sum -c SHA256SUMS --ignore-missing`.
 - **Cite:** see [`CITATION.cff`](CITATION.cff).
 - **Accessibility:** see [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 - **Corrections:** open an issue on this repository with the edition, page or section, and the proposed fix.
@@ -97,7 +97,7 @@ dist/                             Generated output (not committed)
 
 - Title: **Open LLM — From Nothing to the Frontier of Language Models**
 - Author and publisher: **Open LLM Project**
-- Edition: **Second edition, release 2.0 (v2.0.0)**
+- Edition: **Second edition, release 2.1 (v2.1.0)**
 - Technology snapshot: **2 November 2026**
 - Formats: **A5 PDF, reflowable EPUB 3, and standalone HTML**
 
