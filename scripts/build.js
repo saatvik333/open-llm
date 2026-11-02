@@ -313,7 +313,7 @@ function tocHtml(headings, pageNumbers = {}) {
   }).join('\n');
 }
 
-function makeHtml(css, sections, headings, pageNumbers) {
+function makeHtml(css, sections, headings, pageNumbers, { cover = true } = {}) {
   const structuredData = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'Book',
@@ -342,13 +342,13 @@ function makeHtml(css, sections, headings, pageNumbers) {
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to the book</a>
-<section class="cover" role="doc-cover" aria-label="Book cover">
+${cover ? `<section class="cover" role="doc-cover" aria-label="Book cover">
   <div class="cover-top"><span>A free and open book</span><span>${escapeHtml(BOOK.edition)} · ${escapeHtml(BOOK.year)}</span></div>
   <p class="cover-display">From nothing to the <em>frontier</em> of language models.</p>
   <p class="cover-deck">Mathematics · neural networks · transformers · training · reinforcement learning · reasoning · retrieval · agents · serving · evaluation · safety · hands-on labs</p>
   <h1 class="cover-mark">Open <span>LLM</span></h1>
   <div class="cover-meta"><span>${escapeHtml(BOOK.author)}</span><span>Technology snapshot ${escapeHtml(BOOK.snapshot)}</span></div>
-</section>
+</section>` : ''}
 <section class="imprint" role="doc-imprint" aria-label="Publication information">
   <h1>${escapeHtml(BOOK.title)}</h1>
   <p class="imprint-subtitle"><strong>${escapeHtml(BOOK.subtitle)}</strong></p>
@@ -372,7 +372,9 @@ function makeHtml(css, sections, headings, pageNumbers) {
 </html>`;
 }
 
-async function renderPdf(page, htmlPath, pdfPath) {
+const PAGE_NUMBER_FOOTER = '<div style="font-size:7px;letter-spacing:.06em;color:#5a5e66;width:100%;padding:0 18mm;text-align:center;font-family:\'DejaVu Sans Mono\',monospace"><span class="pageNumber"></span></div>';
+
+async function renderPdf(page, htmlPath, pdfPath, footerTemplate) {
   await page.goto(`file://${htmlPath}`, { waitUntil: 'load' });
   await page.emulateMedia({ media: 'print' });
   await page.evaluate(() => document.fonts.ready);
@@ -385,7 +387,7 @@ async function renderPdf(page, htmlPath, pdfPath) {
     preferCSSPageSize: true,
     displayHeaderFooter: true,
     headerTemplate: '<div></div>',
-    footerTemplate: '<div style="font-size:7px;letter-spacing:.06em;color:#5a5e66;width:100%;padding:0 18mm;text-align:center;font-family:\'DejaVu Sans Mono\',monospace"><span class="pageNumber"></span></div>',
+    footerTemplate,
     margin: { top: '12mm', right: '0', bottom: '12mm', left: '0' },
     outline: true,
     tagged: true,
@@ -439,9 +441,9 @@ function objectOption(reference) {
   return `${match[1]},${match[2]}`;
 }
 
-function polishPdf(pdfPath, headings) {
+function polishPdf(pdfPath, headings, frontTitles) {
   const outlines = flattenOutlines(readOutlineTree(pdfPath));
-  const desiredOutlineTitles = [BOOK.title.toUpperCase(), BOOK.title, 'Contents', ...headings.map(item => item.title)];
+  const desiredOutlineTitles = [...frontTitles, ...headings.map(item => item.title)];
   if (outlines.length !== desiredOutlineTitles.length) {
     throw new Error(`Expected ${desiredOutlineTitles.length} bookmarks but found ${outlines.length}.`);
   }
@@ -494,24 +496,25 @@ function polishPdf(pdfPath, headings) {
   }
 }
 
-async function main() {
-  ensureQpdf();
+function readManuscript() {
   if (!fs.existsSync(MANUSCRIPT)) throw new Error(`Missing manuscript directory: ${MANUSCRIPT}`);
   const files = fs.readdirSync(MANUSCRIPT).filter(name => name.endsWith('.md')).sort();
   if (!files.length) throw new Error('No Markdown files found in manuscript/.');
-
   const headings = [];
   const usedSlugs = new Set();
   const sections = files.map(name => {
     const source = fs.readFileSync(path.join(MANUSCRIPT, name), 'utf8');
     return markdownToHtml(source, headings, usedSlugs);
   }).join('\n');
-  // dist/open-llm.html and the site's /read/ both sit one level below the folder that holds assets/fonts.
-  const css = fontFaces(file => `../assets/fonts/${file}`) + fs.readFileSync(STYLE, 'utf8');
+  return { files, headings, sections };
+}
 
-  fs.mkdirSync(DIST, { recursive: true });
-  const htmlPath = path.join(DIST, 'open-llm.html');
-  const pdfPath = path.join(DIST, 'open-llm.pdf');
+// Renders the book until the contents page numbers stop moving, then sets metadata and bookmarks.
+// `cover: false` drops the cover page (the print edition's cover is a separate case wrap).
+async function buildPdf({ css, htmlPath, pdfPath, cover = true, footerTemplate = PAGE_NUMBER_FOOTER }) {
+  ensureQpdf();
+  const { files, headings, sections } = readManuscript();
+  fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
 
   const { chromium } = locatePlaywright();
   const browser = await chromium.launch({ headless: true });
@@ -520,8 +523,8 @@ async function main() {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
     let stable = false;
     for (let pass = 1; pass <= 4; pass += 1) {
-      fs.writeFileSync(htmlPath, makeHtml(css, sections, headings, pageNumbers));
-      await renderPdf(page, htmlPath, pdfPath);
+      fs.writeFileSync(htmlPath, makeHtml(css, sections, headings, pageNumbers, { cover }));
+      await renderPdf(page, htmlPath, pdfPath, footerTemplate);
       const measured = manuscriptPageNumbers(headings, readOutlineTree(pdfPath));
       if (samePageNumbers(pageNumbers, measured)) {
         stable = true;
@@ -534,11 +537,20 @@ async function main() {
     await browser.close();
   }
 
-  polishPdf(pdfPath, headings);
+  const frontTitles = cover ? [BOOK.title.toUpperCase(), BOOK.title, 'Contents'] : [BOOK.title, 'Contents'];
+  polishPdf(pdfPath, headings, frontTitles);
   execFileSync('qpdf', ['--check', pdfPath], { stdio: 'ignore' });
-
-  const stats = fs.statSync(pdfPath);
   const pages = Number(execFileSync('qpdf', ['--show-npages', pdfPath], { encoding: 'utf8' }).trim());
+  return { files, headings, pages };
+}
+
+async function main() {
+  // dist/open-llm.html and the site's /read/ both sit one level below the folder that holds assets/fonts.
+  const css = fontFaces(file => `../assets/fonts/${file}`) + fs.readFileSync(STYLE, 'utf8');
+  const htmlPath = path.join(DIST, 'open-llm.html');
+  const pdfPath = path.join(DIST, 'open-llm.pdf');
+  const { files, headings, pages } = await buildPdf({ css, htmlPath, pdfPath });
+  const stats = fs.statSync(pdfPath);
   console.log(`Built ${path.relative(ROOT, pdfPath)} (${pages} pages, ${(stats.size / 1024 / 1024).toFixed(2)} MiB)`);
   console.log(`Built ${path.relative(ROOT, htmlPath)}`);
   console.log(`Included ${files.length} manuscript files, ${headings.length} headings, and ${headings.filter(item => item.level === 1).length} contents entries.`);
@@ -556,6 +568,8 @@ module.exports = {
   FONTS,
   fontFaces,
   fontFiles,
+  buildPdf,
+  STYLE,
   escapeHtml,
   inline,
   markdownToHtml,

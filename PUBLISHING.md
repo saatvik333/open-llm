@@ -117,6 +117,13 @@ For a factual correction that does not alter the technology snapshot, increment 
 
 Earlier releases stay available under their tags. The `latest/download` links always point at the newest release.
 
-## Print-on-demand note
+## Print edition (Pothi.com hardcover)
 
-The included PDF is a complete A5 interior-and-digital-cover edition. A print-on-demand platform may require a different trim size, inside/outside gutter margins, bleed, color profile, and a separate full-wrap cover calculated from final paper stock and spine width. Generate those platform-specific files only after selecting the printer; do not stretch this PDF to fit an unrelated template.
+The release PDF is a digital edition: it has a full-bleed cover page and no gutter, so printers reject it. `node scripts/build-print.js` builds the print files for a Pothi.com A5 hardcover with a black-and-white interior:
+
+| File | What it is |
+|---|---|
+| `dist/print/Open-LLM-v<version>-interior.pdf` | A5, no cover page, grayscale, fonts embedded, 20 mm gutter and at least 13.7 mm on every other side, light code blocks |
+| `dist/print/Open-LLM-v<version>-hardcover.pdf` | CMYK case wrap (flap, back, spine, front, flap), sized by Pothi’s formula from the interior page count |
+
+On Pothi.com: submit a print book with page size A5, hard cover binding, plain white paper, and B&W interior; upload both files; set **Who can buy** to **Only me**; then buy a copy at the author price. Other printers use different cover formulas; adapt `scripts/build-print.js` rather than stretching these files.

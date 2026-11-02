@@ -1,0 +1,17 @@
+/* Print edition: appended after book.css by scripts/build-print.js.
+   Pothi.com asks for at least 0.5in (12.7mm) margins plus a 0.25in (6.35mm) gutter, and prints
+   the interior in black only, so code blocks are light and links read as plain text. */
+
+@page { margin: 15mm 14mm 21mm; }
+@page :right { margin-left: 20mm; margin-right: 14mm; }
+@page :left { margin-left: 14mm; margin-right: 20mm; }
+/* book.css gives page 1 no margins for its full-bleed cover; the print interior opens on the imprint. */
+@page :first { margin: 15mm 14mm 21mm 20mm; }
+
+a, a.citation { color: inherit; text-decoration: none; }
+pre {
+  background: #f2f2f2;
+  color: var(--ink);
+  border: .25mm solid #c8c8c8;
+}
+code { background: #ececec; }
