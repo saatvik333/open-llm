@@ -64,7 +64,7 @@ em { color: var(--accent); }
 .body { margin-top: 6mm; color: #c9c5bc; font-size: 8.6pt; line-height: 1.58; }
 .body p + p { margin-top: 3mm; }
 .spine-title, .spine-meta { writing-mode: vertical-rl; }
-.spine-title { font: italic 400 22pt/1 var(--serif); letter-spacing: -.02em; }
+.spine-title { font: italic 400 28pt/1 var(--serif); letter-spacing: -.02em; }
 .spine-title span { color: var(--accent); font: 600 7pt/1 var(--mono); letter-spacing: .14em; font-style: normal; margin-top: 2mm; }
 .spine-meta { color: var(--muted); font: 500 6pt/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 </style></head><body>
@@ -86,7 +86,7 @@ em { color: var(--accent); }
 <div class="panel front">
   <div class="row top"><span>A free and open book</span><span>${escapeHtml(BOOK.edition)} · ${escapeHtml(BOOK.year)}</span></div>
   <p class="display">From nothing to the <em>frontier</em> of language models.</p>
-  <p class="deck">Mathematics · neural networks · transformers · training · reinforcement learning · reasoning · retrieval · agents · serving · evaluation · safety · hands-on labs</p>
+  <p class="deck">Mathematics · neural networks · transformers · training · reinforcement learning · reasoning · retrieval · agents · serving · evaluation · safety · <span style="white-space:nowrap">hands-on labs</span></p>
   <div class="mark">Open<span>LLM</span></div>
   <div class="row bottom"><span>${escapeHtml(BOOK.author)}</span><span>Technology snapshot ${escapeHtml(BOOK.snapshot)}</span></div>
 </div>
@@ -121,12 +121,14 @@ async function main() {
   const css = fontCss + fs.readFileSync(STYLE, 'utf8') + fs.readFileSync(path.join(ROOT, 'assets', 'print.css'), 'utf8');
   const htmlPath = path.join(OUT, '.interior.html');
   const rgbPath = path.join(OUT, '.interior-rgb.pdf');
-  const { pages } = await buildPdf({ css, htmlPath, pdfPath: rgbPath, cover: false, footerTemplate: FOOTER });
+  const { pages, tight, runts } = await buildPdf({ css, htmlPath, pdfPath: rgbPath, cover: false, footerTemplate: FOOTER, fixRunts: true });
+  if (runts.length) throw new Error(`Chapters still ending on a nearly empty page: ${runts.join('; ')}`);
   ghostscript(rgbPath, INTERIOR, 'gray');
   fs.rmSync(htmlPath);
   fs.rmSync(rgbPath);
 
   const { width, height, spine } = await buildCover(pages);
+  console.log(`Tightened ${Object.keys(tight).length} chapter(s) so none ends on a nearly empty page.`);
   const inch = value => `${value.toFixed(3)} in (${(value * 25.4).toFixed(1)} mm)`;
   console.log(`Built ${path.relative(ROOT, INTERIOR)} (A5, ${pages} pages, grayscale)`);
   console.log(`Built ${path.relative(ROOT, COVER)} (CMYK, ${inch(width)} × ${inch(height)}, spine ${inch(spine)})`);

@@ -374,11 +374,18 @@ ${cover ? `<section class="cover" role="doc-cover" aria-label="Book cover">
 
 const PAGE_NUMBER_FOOTER = '<div style="font-size:7px;letter-spacing:.06em;color:#5a5e66;width:100%;padding:0 18mm;text-align:center;font-family:\'DejaVu Sans Mono\',monospace"><span class="pageNumber"></span></div>';
 
-async function renderPdf(page, htmlPath, pdfPath, footerTemplate) {
+async function renderPdf(page, htmlPath, pdfPath, footerTemplate, tight = {}) {
   await page.goto(`file://${htmlPath}`, { waitUntil: 'load' });
   await page.emulateMedia({ media: 'print' });
   await page.evaluate(() => document.fonts.ready);
   const missing = await page.evaluate(() => [...document.fonts].filter(face => face.status === 'error').map(face => face.family));
+  // Tag everything from each tightened chapter's heading up to the next chapter heading.
+  await page.evaluate(levels => {
+    for (const [id, level] of Object.entries(levels)) {
+      let node = document.getElementById(id);
+      do { node.classList.add(`tight-${level}`); node = node.nextElementSibling; } while (node && node.tagName !== 'H1');
+    }
+  }, tight);
   if (missing.length) throw new Error(`Fonts failed to load: ${[...new Set(missing)].join(', ')}`);
   await page.pdf({
     path: pdfPath,
@@ -509,9 +516,37 @@ function readManuscript() {
   return { files, headings, sections };
 }
 
+// Lines of text on a page, not counting the running page number.
+function textLines(pdfPath, pageNumber) {
+  const text = execFileSync('pdftotext', ['-f', String(pageNumber), '-l', String(pageNumber), '-layout', pdfPath, '-'], { encoding: 'utf8' });
+  return text.split('\n').filter(line => line.trim()).length - 1;
+}
+
+// A chapter whose last page holds only a few lines (a runt) is set slightly tighter, one step at a
+// time, until its text fits on the pages before. Returns the chapters whose level changed.
+const MIN_LAST_PAGE_LINES = 6;
+const MAX_TIGHTEN = 3;
+function tightenRunts(pdfPath, headings, pageNumbers, tight) {
+  const chapters = headings.filter(item => item.level === 1);
+  const changed = [];
+  for (let i = 0; i + 1 < chapters.length; i += 1) {
+    const lastPage = pageNumbers[chapters[i + 1].id] - 1;
+    if (lastPage <= pageNumbers[chapters[i].id]) continue;
+    if (textLines(pdfPath, lastPage) >= MIN_LAST_PAGE_LINES) continue;
+    const level = tight[chapters[i].id] || 0;
+    if (level < MAX_TIGHTEN) {
+      tight[chapters[i].id] = level + 1;
+      changed.push(chapters[i].title);
+    }
+  }
+  return changed;
+}
+
 // Renders the book until the contents page numbers stop moving, then sets metadata and bookmarks.
 // `cover: false` drops the cover page (the print edition's cover is a separate case wrap).
-async function buildPdf({ css, htmlPath, pdfPath, cover = true, footerTemplate = PAGE_NUMBER_FOOTER }) {
+// `fixRunts` tightens chapters that would end with a nearly empty page (the stylesheet supplies
+// `.tight-1` … `.tight-3`).
+async function buildPdf({ css, htmlPath, pdfPath, cover = true, footerTemplate = PAGE_NUMBER_FOOTER, fixRunts = false }) {
   ensureQpdf();
   const { files, headings, sections } = readManuscript();
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
@@ -519,20 +554,31 @@ async function buildPdf({ css, htmlPath, pdfPath, cover = true, footerTemplate =
   const { chromium } = locatePlaywright();
   const browser = await chromium.launch({ headless: true });
   let pageNumbers = {};
+  const tight = {};
+  const runts = [];
   try {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
     let stable = false;
-    for (let pass = 1; pass <= 4; pass += 1) {
+    for (let pass = 1; pass <= 16; pass += 1) {
       fs.writeFileSync(htmlPath, makeHtml(css, sections, headings, pageNumbers, { cover }));
-      await renderPdf(page, htmlPath, pdfPath, footerTemplate);
+      await renderPdf(page, htmlPath, pdfPath, footerTemplate, tight);
       const measured = manuscriptPageNumbers(headings, readOutlineTree(pdfPath));
       if (samePageNumbers(pageNumbers, measured)) {
-        stable = true;
-        break;
+        if (!fixRunts || !tightenRunts(pdfPath, headings, measured, tight).length) {
+          stable = true;
+          break;
+        }
       }
       pageNumbers = measured;
     }
-    if (!stable) throw new Error('Table-of-contents pagination did not stabilize after four passes.');
+    if (!stable) throw new Error('Pagination did not stabilize after sixteen passes.');
+    if (fixRunts) {
+      const chapters = headings.filter(item => item.level === 1);
+      for (let i = 0; i + 1 < chapters.length; i += 1) {
+        const lastPage = pageNumbers[chapters[i + 1].id] - 1;
+        if (lastPage > pageNumbers[chapters[i].id] && textLines(pdfPath, lastPage) < MIN_LAST_PAGE_LINES) runts.push(chapters[i].title);
+      }
+    }
   } finally {
     await browser.close();
   }
@@ -541,7 +587,7 @@ async function buildPdf({ css, htmlPath, pdfPath, cover = true, footerTemplate =
   polishPdf(pdfPath, headings, frontTitles);
   execFileSync('qpdf', ['--check', pdfPath], { stdio: 'ignore' });
   const pages = Number(execFileSync('qpdf', ['--show-npages', pdfPath], { encoding: 'utf8' }).trim());
-  return { files, headings, pages };
+  return { files, headings, pages, tight, runts };
 }
 
 async function main() {
